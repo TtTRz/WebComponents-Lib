@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Component</title>
+</head>
+
+<body>
+  <calc-content></calc-content>
+</body>
+<script>
+  let template = document.createElement('template')
+  template.innerHTML = `
+    <div class="container">
+      <div class="header">
+        <div id="result"></div>
+      </div>
+      <div class="body">
+        
+      </div>  
+    </div>
+  `
+  class CalcContent extends HTMLElement {
+    constructor() {
+      super()
+      let props = {}
+      this.getAttributeNames().forEach((attributeKey) => {
+        props[attributeKey] = this.getAttribute(attributeKey)
+      })
+      let shadowRoot = this.attachShadow({ mode: 'open' })
+      let content = template.content.cloneNode(true)
+
+      shadowRoot.appendChild(content)
+    }
+
+    static get observedAttributes() {
+      return [];
+    }
+
+    attributeChangedCallback() {
+
+    }
+  }
+
+  window.customElements.define('calc-content', CalcContent)
+</script>
+
+</html>

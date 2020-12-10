@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Component</title>
+</head>
+
+<body>
+  <student-info name="hello" code="0001" phone="2333"></student-info>
+  <student-info name="world" code="0002" phone="33333"></student-info>
+  <template id="student-info">
+    <style>
+      .student-info-card {
+        border: 1px solid black;
+        border-radius: 4px;
+        margin: 16px 24px;
+        padding: 16px 24px
+      }
+
+      .student-info-card>div {
+        margin: 8px 0;
+      }
+    </style>
+    <div class="student-info-card">
+      <div>
+        姓名: <span id="student-name"></span>
+      </div>
+      <div>
+        学号: <span id="student-code"></span>
+      </div>
+      <div>
+        电话: <span id="student-phone"></span>
+      </div>
+    </div>
+  </template>
+</body>
+<script>
+  class StudentInfo extends HTMLElement {
+    constructor() {
+      super()
+      let props = {}
+      this.getAttributeNames().forEach((attributeKey) => {
+        props[attributeKey] = this.getAttribute(attributeKey)
+      })
+      let shadowRoot = this.attachShadow({ mode: 'open' })
+      let content = document.getElementById('student-info').content.cloneNode(true)
+      let nameElem = content.getElementById('student-name')
+      let codeElem = content.getElementById('student-code')
+      let phoneElem = content.getElementById('student-phone')
+      nameElem.innerText = props.name || ""
+      codeElem.innerText = props.code || ""
+      phoneElem.innerText = props.phone || ""
+      shadowRoot.appendChild(content)
+    }
+
+    static get observedAttributes() {
+      return ['name', 'code', 'phone'];
+    }
+
+    attributeChangedCallback() {
+      console.log("changed")
+      const name = this.getAttribute("name") || ""
+      const code = this.getAttribute("code") || ""
+      const phone = this.getAttribute("phone") || ""
+      this.shadowRoot.getElementById("student-name").innerHTML = name
+      this.shadowRoot.getElementById("student-code").innerHTML = code
+      this.shadowRoot.getElementById("student-phone").innerHTML = phone
+    }
+  }
+
+  window.customElements.define('student-info', StudentInfo)
+</script>
+
+</html>
